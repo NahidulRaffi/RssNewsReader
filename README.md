@@ -1,4 +1,4 @@
-###RSS News Reader
+### RSS News Reader
 
 ## Notice
 This app is compatible with Android 5.+ (Lolipop) Versions. So please be sure your android version is equal or above 5.+.
