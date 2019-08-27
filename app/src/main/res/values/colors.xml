@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#005696</color>
+    <color name="colorPrimaryDark">#005696</color>
+    <color name="colorAccent">#00BCE4</color>
+
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBlack">#000000</color>
+
+    <color name="translucent_black">#26ffffff</color>
+    <color name="translucent_clear">#00FFFFFF</color>
+    <color name="colorPrimaryAlpha">#1A0F2444</color>
+    <color name="colorPrimaryAlphaPassengerSubTitle">#660F2444</color>
+    <color name="colorPrimaryHint">#800F2444</color>
+    <color name="shimmerBackground">#D0D0D0</color>
+    <color name="default_foreground_color">#C0C0C0</color>
+
+    <color name="colorBackground">#FAFAFB</color>
+    <color name="colorRedBackground">#330F2444</color>
+    <color name="text">#FECC45</color>
+    <color name="text_dim">#660F2444</color>
+    <color name="toolsColor">#0F2444</color>
+
+    <color name="theme_color">#022E4C</color>
+    <color name="colorRed">#D20025</color>
+    <color name="shimmer_color">#a2878787</color>
 </resources>
