@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.androhungers.rssnewsreader.model.signin.SignRequestModel;
+import com.androhungers.rssnewsreader.model.signin.SigninRequestModel;
 import com.androhungers.rssnewsreader.model.signin.SigninResponseModel;
+import com.androhungers.rssnewsreader.model.signup.SignupRequestModel;
+import com.androhungers.rssnewsreader.model.signup.SignupResponseModel;
 import com.androhungers.rssnewsreader.repository.ApiRepository;
 
 public class LoginViewModel extends ViewModel {
@@ -16,7 +18,8 @@ public class LoginViewModel extends ViewModel {
     public MutableLiveData<String> name = new MutableLiveData<>();
     public MutableLiveData<String> age = new MutableLiveData<>();
     public MutableLiveData<String> errorMsg = new MutableLiveData<>();
-    public MutableLiveData<SignRequestModel> signinRequestModelMutableLiveData = new MutableLiveData<>();
+    public MutableLiveData<SigninRequestModel> signinRequestModelMutableLiveData = new MutableLiveData<>();
+    public MutableLiveData<SignupRequestModel> signupRequestModelMutableLiveData = new MutableLiveData<>();
 
 
     public void setState(String state){
@@ -50,14 +53,28 @@ public class LoginViewModel extends ViewModel {
         return true;
     }
 
-    public SignRequestModel makeLoginRequest(){
-        return new SignRequestModel(
+    public SigninRequestModel makeLoginRequest(){
+        return new SigninRequestModel(
                 userName.getValue(),
                 password.getValue()
         );
     }
 
-    public LiveData<SigninResponseModel> makeSigninRequest(SignRequestModel request) {
+    public SignupRequestModel makeSignUpRequest(){
+        return new SignupRequestModel(
+                userName.getValue(),
+                password.getValue(),
+                name.getValue(),
+                age.getValue()
+        );
+    }
+
+    public LiveData<SigninResponseModel> requestForSignIn(SigninRequestModel request) {
         return new ApiRepository().loginUser(request);
     }
+
+    public LiveData<SignupResponseModel> requestForSignUp(SignupRequestModel request) {
+        return new ApiRepository().signUpUser(request);
+    }
+
 }

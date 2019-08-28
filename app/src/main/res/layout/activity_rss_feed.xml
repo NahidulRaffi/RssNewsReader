@@ -1,9 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     tools:context=".activities.RssFeedActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        card_view:cardBackgroundColor="@color/colorWhite"
+        card_view:cardCornerRadius="0dp"
+        card_view:cardElevation="8dp" >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp">
+            <ImageView
+                android:id="@+id/img"
+                android:layout_margin="8dp"
+                android:src="@drawable/rss1"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+            <TextView
+                android:layout_marginLeft="8dp"
+                android:layout_toRightOf="@+id/img"
+                android:textSize="18sp"
+                android:textColor="@color/colorBlack"
+                android:textStyle="normal"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:text="Rss News Reader"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:layout_centerInParent="true"
+                android:layout_margin="8dp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/logout"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <View
+        android:layout_marginTop="-5dp"
+        android:layout_below="@+id/nav"
+        android:background="#ddd"
+        android:layout_width="match_parent"
+        android:layout_height="1.5dp"/>
+
+    <com.gigamole.navigationtabstrip.NavigationTabStrip
+        android:id="@+id/nav"
+        android:layout_below="@+id/card"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:nts_color="@color/colorPrimary"
+        app:nts_size="14sp"
+        app:nts_weight="8dp"
+        app:nts_factor="0.5"
+        app:nts_titles="@array/titles"
+        app:nts_type="point"
+        app:nts_gravity="bottom"
+        app:nts_typeface="fonts/lato.ttf"
+        app:nts_corners_radius="10.5dp"
+        app:nts_animation_duration="300"
+        app:nts_active_color="@color/colorPrimary"
+        app:nts_inactive_color="#c4c4c4"/>
+
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_below="@+id/nav"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </androidx.viewpager.widget.ViewPager>
+
+</RelativeLayout>

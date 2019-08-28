@@ -110,7 +110,7 @@
                             android:layout_width="@dimen/img_size"
                             android:layout_height="@dimen/img_size"/>
                         <EditText
-                            android:inputType="numberSigned"
+                            android:inputType="textPersonName"
                             android:id="@+id/et_name"
                             android:textSize="14sp"
                             android:hint="Name"

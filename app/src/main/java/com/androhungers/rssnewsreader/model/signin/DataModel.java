@@ -16,6 +16,16 @@ public class DataModel{
 	@SerializedName("age")
 	private int age;
 
+	public DataModel() {
+	}
+
+	public DataModel(String userName, String name, int id, int age) {
+		this.userName = userName;
+		this.name = name;
+		this.id = id;
+		this.age = age;
+	}
+
 	public void setUserName(String userName){
 		this.userName = userName;
 	}

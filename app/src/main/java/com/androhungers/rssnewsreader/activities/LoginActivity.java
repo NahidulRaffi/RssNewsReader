@@ -1,21 +1,25 @@
 package com.androhungers.rssnewsreader.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.androhungers.rssnewsreader.MainActivity;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.androhungers.rssnewsreader.R;
 import com.androhungers.rssnewsreader.common.Constants;
 import com.androhungers.rssnewsreader.common.PreferenceHelper;
-import com.androhungers.rssnewsreader.model.signin.SignRequestModel;
+import com.androhungers.rssnewsreader.model.signin.DataModel;
+import com.androhungers.rssnewsreader.model.signin.SigninRequestModel;
 import com.androhungers.rssnewsreader.model.signin.SigninResponseModel;
+import com.androhungers.rssnewsreader.model.signup.SignupResponseModel;
 import com.androhungers.rssnewsreader.viewModel.LoginViewModel;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -25,7 +29,6 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -74,9 +77,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        viewModel.signinRequestModelMutableLiveData.observe(this, new Observer<SignRequestModel>() {
+        viewModel.signinRequestModelMutableLiveData.observe(this, new Observer<SigninRequestModel>() {
             @Override
-            public void onChanged(SignRequestModel signRequestModel) {
+            public void onChanged(SigninRequestModel signinRequestModel) {
 
             }
         });
@@ -102,16 +105,47 @@ public class LoginActivity extends AppCompatActivity {
                 if(viewModel.isValidInput()){
                     if(viewModel.STATE.getValue().equalsIgnoreCase("signin")){
                         viewModel.signinRequestModelMutableLiveData.setValue(viewModel.makeLoginRequest());
-                        viewModel.makeSigninRequest(viewModel.signinRequestModelMutableLiveData.getValue()).observe(LoginActivity.this, new Observer<SigninResponseModel>() {
+                        viewModel.requestForSignIn(viewModel.signinRequestModelMutableLiveData.getValue()).observe(LoginActivity.this, new Observer<SigninResponseModel>() {
                             @Override
                             public void onChanged(SigninResponseModel signinResponseModel) {
                                 rotateLoading.stop();
                                 textViewSignIn.setText("Sign In");
-                                String data = new Gson().toJson(signinResponseModel.getData());
-                                new PreferenceHelper(getApplicationContext()).saveString(Constants.USER_DATA_FIELD,data);
+                                if(signinResponseModel.isSuccess()){
+                                    String data = new Gson().toJson(signinResponseModel.getData());
+                                    new PreferenceHelper(getApplicationContext()).saveString(Constants.USER_DATA_FIELD,data);
+                                    new PreferenceHelper(getApplicationContext()).saveString(Constants.LOGIN_SATE_FIELD,"true");
+
+                                    Intent intent = new Intent(LoginActivity.this, RssFeedActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }else {
+
+
+                                }
+
                             }
                         });
                     }else if(viewModel.STATE.getValue().equalsIgnoreCase("signup")) {
+
+                        viewModel.signupRequestModelMutableLiveData.setValue(viewModel.makeSignUpRequest());
+                        viewModel.requestForSignUp(viewModel.signupRequestModelMutableLiveData.getValue()).observe(LoginActivity.this, new Observer<SignupResponseModel>() {
+                            @Override
+                            public void onChanged(SignupResponseModel signupResponseModel) {
+                                rotateLoading.stop();
+                                textViewSignIn.setText("Sign Up");
+                                if(signupResponseModel.isSuccess()){
+                                    String data = new Gson().toJson(signupResponseModel.getData());
+                                    new PreferenceHelper(getApplicationContext()).saveString(Constants.USER_DATA_FIELD,data);
+                                    new PreferenceHelper(getApplicationContext()).saveString(Constants.LOGIN_SATE_FIELD,"true");
+                                    Intent intent = new Intent(LoginActivity.this, RssFeedActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }else {
+
+                                }
+
+                            }
+                        });
 
                     }
                 }

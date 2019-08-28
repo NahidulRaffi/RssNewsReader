@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.androhungers.rssnewsreader.activities.LoginActivity;
+import com.androhungers.rssnewsreader.activities.RssFeedActivity;
 import com.androhungers.rssnewsreader.common.Constants;
 import com.androhungers.rssnewsreader.common.PreferenceHelper;
 
@@ -23,8 +24,11 @@ public class MainActivity extends AppCompatActivity {
                 if(new PreferenceHelper(getApplicationContext()).getString(Constants.LOGIN_SATE_FIELD).equals("")){
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
+                    finish();
                 }else {
-
+                    Intent intent = new Intent(getApplicationContext(), RssFeedActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             }
         }, 800);

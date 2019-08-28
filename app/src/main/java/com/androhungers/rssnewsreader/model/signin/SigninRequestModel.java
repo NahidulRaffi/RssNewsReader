@@ -1,13 +1,13 @@
 package com.androhungers.rssnewsreader.model.signin;
 
-public class SignRequestModel {
+public class SigninRequestModel {
     private String user_name = null;
     private String password = null;
 
-    public SignRequestModel() {
+    public SigninRequestModel() {
     }
 
-    public SignRequestModel(String user_name, String password) {
+    public SigninRequestModel(String user_name, String password) {
         this.user_name = user_name;
         this.password = password;
     }
