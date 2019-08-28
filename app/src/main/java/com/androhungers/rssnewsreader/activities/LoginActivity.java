@@ -5,16 +5,20 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.androhungers.rssnewsreader.MainActivity;
 import com.androhungers.rssnewsreader.R;
+import com.androhungers.rssnewsreader.common.Constants;
+import com.androhungers.rssnewsreader.common.PreferenceHelper;
 import com.androhungers.rssnewsreader.model.signin.SignRequestModel;
 import com.androhungers.rssnewsreader.model.signin.SigninResponseModel;
 import com.androhungers.rssnewsreader.viewModel.LoginViewModel;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.victor.loading.rotate.RotateLoading;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
@@ -81,38 +85,48 @@ public class LoginActivity extends AppCompatActivity {
 
         viewModel.STATE.setValue("signin");
 
-        //Submit();
-        //SingInUp();
-
+        setOnClickEvent();
     }
 
-    @OnClick(R.id.btn_sign_in) void Submit(){
-        rotateLoading.start();
-        viewModel.name.setValue(etName.getText().toString());
-        viewModel.age.setValue(etAge.getText().toString());
-        viewModel.userName.setValue(etUserName.getText().toString());
-        viewModel.password.setValue(etPassword.getText().toString());
+    private void setOnClickEvent(){
+        textViewSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotateLoading.start();
+                textViewSignIn.setText("");
+                viewModel.name.setValue(etName.getText().toString());
+                viewModel.age.setValue(etAge.getText().toString());
+                viewModel.userName.setValue(etUserName.getText().toString());
+                viewModel.password.setValue(etPassword.getText().toString());
 
-        if(viewModel.isValidInput()){
-            if(viewModel.STATE.getValue().equalsIgnoreCase("signin")){
-                viewModel.signinRequestModelMutableLiveData.setValue(viewModel.makeLoginRequest());
-                viewModel.makeSigninRequest(viewModel.signinRequestModelMutableLiveData.getValue()).observe(this, new Observer<SigninResponseModel>() {
-                    @Override
-                    public void onChanged(SigninResponseModel signinResponseModel) {
-                        rotateLoading.stop();
+                if(viewModel.isValidInput()){
+                    if(viewModel.STATE.getValue().equalsIgnoreCase("signin")){
+                        viewModel.signinRequestModelMutableLiveData.setValue(viewModel.makeLoginRequest());
+                        viewModel.makeSigninRequest(viewModel.signinRequestModelMutableLiveData.getValue()).observe(LoginActivity.this, new Observer<SigninResponseModel>() {
+                            @Override
+                            public void onChanged(SigninResponseModel signinResponseModel) {
+                                rotateLoading.stop();
+                                textViewSignIn.setText("Sign In");
+                                String data = new Gson().toJson(signinResponseModel.getData());
+                                new PreferenceHelper(getApplicationContext()).saveString(Constants.USER_DATA_FIELD,data);
+                            }
+                        });
+                    }else if(viewModel.STATE.getValue().equalsIgnoreCase("signup")) {
+
                     }
-                });
-            }else if(viewModel.STATE.getValue().equalsIgnoreCase("signup")) {
-
+                }
             }
-        }
-    }
+        });
 
-    @OnClick(R.id.tv_sign_up) void SingInUp(){
-        if(viewModel.STATE.getValue().equalsIgnoreCase("signin")){
-            viewModel.setState("signup");
-        }else if(viewModel.STATE.getValue().equalsIgnoreCase("signup")) {
-            viewModel.setState("signin");
-        }
+        textViewSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(viewModel.STATE.getValue().equalsIgnoreCase("signin")){
+                    viewModel.setState("signup");
+                }else if(viewModel.STATE.getValue().equalsIgnoreCase("signup")) {
+                    viewModel.setState("signin");
+                }
+            }
+        });
     }
 }

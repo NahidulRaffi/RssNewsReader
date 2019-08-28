@@ -11,6 +11,8 @@ import com.androhungers.rssnewsreader.model.signin.SignRequestModel;
 import com.androhungers.rssnewsreader.model.signin.SigninResponseModel;
 import com.google.gson.Gson;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,9 +30,12 @@ public class ApiRepository {
         final MutableLiveData<SigninResponseModel> data =  new MutableLiveData();
 
         String s = new Gson().toJson(request);
+        RequestBody userName = RequestBody.create(MediaType.parse("multipart/form-data"), request.getUser_name());
+        RequestBody password = RequestBody.create(MediaType.parse("multipart/form-data"), request.getPassword());
+
 
         Log.d("SearchKeyRequest", s);
-        apiServices.signInUser(request).enqueue(new Callback<SigninResponseModel>() {
+        apiServices.signInUser(userName,password).enqueue(new Callback<SigninResponseModel>() {
             @Override
             public void onResponse(Call<SigninResponseModel> call, Response<SigninResponseModel> response) {
                 data.postValue(response.body());

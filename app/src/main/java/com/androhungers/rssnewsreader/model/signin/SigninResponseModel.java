@@ -1,32 +1,49 @@
 package com.androhungers.rssnewsreader.model.signin;
 
-import com.androhungers.rssnewsreader.model.signin.DataModel;
+import com.google.gson.annotations.SerializedName;
 
-public class SigninResponseModel {
-    private boolean success = false;
-    private DataModel data = null;
+public class SigninResponseModel{
 
-    public SigninResponseModel() {
-    }
+	@SerializedName("data")
+	private DataModel data;
 
-    public SigninResponseModel(boolean success, DataModel data) {
-        this.success = success;
-        this.data = data;
-    }
+	@SerializedName("success")
+	private boolean success;
 
-    public boolean isSuccess() {
-        return success;
-    }
+	@SerializedName("message")
+	private String message;
 
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
+	public void setData(DataModel data){
+		this.data = data;
+	}
 
-    public DataModel getData() {
-        return data;
-    }
+	public DataModel getData(){
+		return data;
+	}
 
-    public void setData(DataModel data) {
-        this.data = data;
-    }
+	public void setSuccess(boolean success){
+		this.success = success;
+	}
+
+	public boolean isSuccess(){
+		return success;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	@Override
+ 	public String toString(){
+		return 
+			"SigninResponseModel{" + 
+			"data = '" + data + '\'' + 
+			",success = '" + success + '\'' +
+			",message = '" + message + '\'' +
+			"}";
+		}
 }

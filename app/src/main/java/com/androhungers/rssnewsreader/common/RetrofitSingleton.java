@@ -26,7 +26,7 @@ public class RetrofitSingleton {
     public Retrofit getRetrofit(){
         if (retrofit == null) {
             OkHttpClient client = new OkHttpClient.Builder()
-                    .addInterceptor(new Interceptor() {
+                    /*.addInterceptor(new Interceptor() {
                         @Override
                         public Response intercept(Chain chain) throws IOException {
                             Request newRequest  = chain.request().newBuilder()
@@ -34,7 +34,7 @@ public class RetrofitSingleton {
                                     .build();
                             return chain.proceed(newRequest);
                         }
-                    })
+                    })*/
                     .connectTimeout(1000, TimeUnit.SECONDS)
                     .readTimeout(1000, TimeUnit.SECONDS).build();
             retrofit = new Retrofit.Builder()
