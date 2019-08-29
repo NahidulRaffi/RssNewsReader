@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorWhite"
+    android:id="@+id/rl_root"
     android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/img_close"
@@ -58,7 +59,7 @@
                 android:layout_height="@dimen/img_size"/>
             <EditText
                 android:inputType="textEmailAddress"
-                android:id="@+id/et_user_name"
+                android:id="@+id/et_feed_name"
                 android:textSize="14sp"
                 android:hint="Rss Title"
                 android:layout_marginLeft="16dp"
@@ -82,7 +83,7 @@
                 android:layout_height="@dimen/img_size"/>
             <EditText
                 android:inputType="text"
-                android:id="@+id/et_password"
+                android:id="@+id/et_link"
                 android:textSize="14sp"
                 android:hint="Rss Link"
                 android:layout_marginLeft="16dp"
@@ -100,9 +101,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:id="@+id/btn_sign_in"
+                android:id="@+id/btn_add"
                 android:gravity="center"
-                android:text="Sign In"
+                android:text="ADD"
                 android:textSize="16sp"
                 android:textAllCaps="false"
                 android:textColor="@color/colorWhite"

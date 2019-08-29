@@ -2,8 +2,17 @@ package com.androhungers.rssnewsreader.viewModel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
+import com.androhungers.rssnewsreader.model.addRss.AddRssRequestModel;
+import com.androhungers.rssnewsreader.model.addRss.AddRssResponseModel;
+import com.androhungers.rssnewsreader.model.deleteRss.DeleteRssRequestModel;
+import com.androhungers.rssnewsreader.model.deleteRss.DeleteRssResponseModel;
+import com.androhungers.rssnewsreader.model.editRss.EditRssRequestModel;
+import com.androhungers.rssnewsreader.model.editRss.EditRssResponseModel;
+import com.androhungers.rssnewsreader.model.getRss.GetRssRequestModel;
+import com.androhungers.rssnewsreader.model.getRss.GetRssResponseModel;
 import com.androhungers.rssnewsreader.model.signin.SigninRequestModel;
 import com.androhungers.rssnewsreader.model.signin.SigninResponseModel;
 import com.androhungers.rssnewsreader.model.signup.SignupRequestModel;
@@ -12,69 +21,58 @@ import com.androhungers.rssnewsreader.repository.ApiRepository;
 
 public class RssFeedViewModel extends ViewModel {
 
-    public MutableLiveData<String> STATE = new MutableLiveData<String>();
-    public MutableLiveData<String> userName = new MutableLiveData<>();
-    public MutableLiveData<String> password = new MutableLiveData<>();
-    public MutableLiveData<String> name = new MutableLiveData<>();
-    public MutableLiveData<String> age = new MutableLiveData<>();
+
+    public MutableLiveData<Integer> tabPosition = new MutableLiveData<>();
+    public MutableLiveData<String> feedNameLiveData = new MutableLiveData<>();
+    public MutableLiveData<String> linkLiveData = new MutableLiveData<>();
     public MutableLiveData<String> errorMsg = new MutableLiveData<>();
-    public MutableLiveData<SigninRequestModel> signinRequestModelMutableLiveData = new MutableLiveData<>();
-    public MutableLiveData<SignupRequestModel> signupRequestModelMutableLiveData = new MutableLiveData<>();
 
+    public MutableLiveData<AddRssRequestModel> addRssRequestModelMutableLiveData = new MutableLiveData<>();
+    public MutableLiveData<AddRssResponseModel> addRssResponseModelMutableLiveData = new MutableLiveData<>();
 
-    public void setState(String state){
-        this.STATE.postValue(state);
-    }
+    public MutableLiveData<EditRssRequestModel> editRssRequestModelMutableLiveData = new MutableLiveData<>();
+    public MutableLiveData<EditRssResponseModel> editRssResponseModelMutableLiveData = new MutableLiveData<>();
+
+    public MutableLiveData<GetRssRequestModel> getRssRequestModelMutableLiveData = new MutableLiveData<>();
+    public MutableLiveData<GetRssResponseModel> getRssResponseModelMutableLiveData = new MutableLiveData<>();
+
+    public MutableLiveData<DeleteRssRequestModel> deleteRssRequestModelMutableLiveData = new MutableLiveData<>();
+    public MutableLiveData<DeleteRssResponseModel> deleteRssResponseModelMutableLiveData = new MutableLiveData<>();
+
 
     public boolean isValidInput(){
-        if(userName.getValue().isEmpty()){
-            errorMsg.postValue("Please enter your username");
+        if(feedNameLiveData.getValue().isEmpty()){
+            errorMsg.postValue("Please enter Feed Name");
             return false;
         }
 
-        if(password.getValue().isEmpty()){
+        if(linkLiveData.getValue().isEmpty()){
 
-            errorMsg.postValue("Please enter your password");
+            errorMsg.postValue("Please enter Feed Link");
             return false;
-        }
-
-        if(STATE.getValue().equalsIgnoreCase("signup")){
-            if(name.getValue().isEmpty()){
-                errorMsg.postValue("Please enter your name");
-                return false;
-            }
-
-            if(age.getValue().isEmpty()){
-                errorMsg.postValue("Please enter your age");
-                return false;
-            }
         }
 
         return true;
     }
 
-    public SigninRequestModel makeLoginRequest(){
-        return new SigninRequestModel(
-                userName.getValue(),
-                password.getValue()
-        );
+
+    public LiveData<AddRssResponseModel> requestForAddRss(AddRssRequestModel request) {
+        return new ApiRepository().addRss(request);
     }
 
-    public SignupRequestModel makeSignUpRequest(){
-        return new SignupRequestModel(
-                userName.getValue(),
-                password.getValue(),
-                name.getValue(),
-                age.getValue()
-        );
+    public LiveData<GetRssResponseModel> getGetResponse = Transformations.switchMap(getRssRequestModelMutableLiveData,
+            getRssRequestModelMutableLiveData -> new ApiRepository().getRss(getRssRequestModelMutableLiveData));
+
+    public LiveData<GetRssResponseModel> requestForGetRss(GetRssRequestModel request) {
+        return new ApiRepository().getRss(request);
     }
 
-    public LiveData<SigninResponseModel> requestForSignIn(SigninRequestModel request) {
-        return new ApiRepository().loginUser(request);
+    public LiveData<EditRssResponseModel> requestForEditRss(EditRssRequestModel request) {
+        return new ApiRepository().editRss(request);
     }
 
-    public LiveData<SignupResponseModel> requestForSignUp(SignupRequestModel request) {
-        return new ApiRepository().signUpUser(request);
+    public LiveData<DeleteRssResponseModel> requestForDeleteRss(DeleteRssRequestModel request) {
+        return new ApiRepository().deleteRss(request);
     }
 
 }

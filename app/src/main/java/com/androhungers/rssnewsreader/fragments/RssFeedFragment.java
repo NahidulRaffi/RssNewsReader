@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,7 @@ public class RssFeedFragment extends Fragment {
     public static String tag = RssFeedFragment.class.toString();
     private RssFeedActivity rssFeedActivity = new RssFeedActivity();
     ViewModel viewModel;
+    RssPagerAdapter viewPagerAdater;
 
 
     public RssFeedFragment() {
@@ -65,17 +67,18 @@ public class RssFeedFragment extends Fragment {
 
         setUpUI();
 
-
+        Log.i("::>>","Frag Activity Created");
     }
 
     private void setUpUI(){
-        RssPagerAdapter viewPagerAdater = new RssPagerAdapter(getChildFragmentManager());
+        viewPagerAdater = new RssPagerAdapter(getChildFragmentManager());
+        viewPager.removeAllViews();
         viewPager.setAdapter(viewPagerAdater);
 
         navigationTabStrip.setTitles("Home","My Rss");
         navigationTabStrip.setViewPager(viewPager);
 
-        //navigationTabStrip.setTabIndex(0, true);
+//        navigationTabStrip.setTabIndex(0, true);
 
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

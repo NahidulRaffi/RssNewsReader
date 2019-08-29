@@ -46,7 +46,6 @@
 
 
     <androidx.viewpager.widget.ViewPager
-        android:layout_marginTop="-6dp"
         android:id="@+id/view_pager"
         android:layout_below="@+id/rl"
         android:layout_width="match_parent"
@@ -80,7 +79,7 @@
             android:layout_height="50dp"
             app:nts_color="@color/colorAccent"
             app:nts_size="14sp"
-            app:nts_weight="8dp"
+            app:nts_weight="12dp"
             app:nts_factor="0.5"
             app:nts_titles="@array/titles"
             app:nts_type="point"

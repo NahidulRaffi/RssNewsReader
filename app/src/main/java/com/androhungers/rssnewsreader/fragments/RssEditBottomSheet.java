@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 
 import com.androhungers.rssnewsreader.R;
 import com.androhungers.rssnewsreader.common.Common;
@@ -21,15 +20,19 @@ import com.androhungers.rssnewsreader.common.Constants;
 import com.androhungers.rssnewsreader.common.PreferenceHelper;
 import com.androhungers.rssnewsreader.model.addRss.AddRssRequestModel;
 import com.androhungers.rssnewsreader.model.addRss.AddRssResponseModel;
+import com.androhungers.rssnewsreader.model.editRss.EditRssRequestModel;
+import com.androhungers.rssnewsreader.model.editRss.EditRssResponseModel;
 import com.androhungers.rssnewsreader.viewModel.RssFeedViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.victor.loading.rotate.RotateLoading;
 
+import org.w3c.dom.Text;
+
 import static android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
 
-public class RssAddBottomSheet extends BottomSheetDialogFragment {
+public class RssEditBottomSheet extends BottomSheetDialogFragment {
 
     Context context;
 
@@ -46,7 +49,7 @@ public class RssAddBottomSheet extends BottomSheetDialogFragment {
     //public static RssAddBottomSheet getInstance() {return new RssAddBottomSheet();}
 
 
-    public RssAddBottomSheet(RssFeedViewModel viewModel) {
+    public RssEditBottomSheet(RssFeedViewModel viewModel) {
         this.viewModel = viewModel;
     }
 
@@ -114,6 +117,13 @@ public class RssAddBottomSheet extends BottomSheetDialogFragment {
         RelativeLayout root = contentView.findViewById(R.id.rl_root);
         TextView tvAdd = contentView.findViewById(R.id.btn_add);
         RotateLoading rotateLoading = contentView.findViewById(R.id.progress);
+        TextView tt = contentView.findViewById(R.id.tv_class);
+        tt.setText("Update Rss");
+
+        tvAdd.setText("UPDATE");
+
+        etFeedName.setText(viewModel.editRssRequestModelMutableLiveData.getValue().getFeedName());
+        etLink.setText(viewModel.editRssRequestModelMutableLiveData.getValue().getLink());
 
 
         tvAdd.setOnClickListener(new View.OnClickListener() {
@@ -125,15 +135,14 @@ public class RssAddBottomSheet extends BottomSheetDialogFragment {
                 viewModel.linkLiveData.setValue(etLink.getText().toString());
 
                 if(viewModel.isValidInput()){
-                    String userId = String.valueOf(new Common().getUserDataFromSignIn(new PreferenceHelper(getContext()).getString(Constants.USER_DATA_FIELD)).getId());
-                    viewModel.addRssRequestModelMutableLiveData.setValue(new AddRssRequestModel(userId,viewModel.feedNameLiveData.getValue(),viewModel.linkLiveData.getValue()));
-                    viewModel.requestForAddRss(viewModel.addRssRequestModelMutableLiveData.getValue()).observe(RssAddBottomSheet.this, new Observer<AddRssResponseModel>() {
+                    viewModel.editRssRequestModelMutableLiveData.setValue(new EditRssRequestModel(viewModel.editRssRequestModelMutableLiveData.getValue().getId(),viewModel.feedNameLiveData.getValue(),viewModel.linkLiveData.getValue()));
+                    viewModel.requestForEditRss(viewModel.editRssRequestModelMutableLiveData.getValue()).observe(RssEditBottomSheet.this, new Observer<EditRssResponseModel>() {
                         @Override
-                        public void onChanged(AddRssResponseModel addRssResponseModel) {
+                        public void onChanged(EditRssResponseModel editRssResponseModel) {
                             rotateLoading.stop();
-                            tvAdd.setText("ADD");
-                            if(addRssResponseModel.isSuccess()){
-                                viewModel.addRssResponseModelMutableLiveData.postValue(addRssResponseModel);
+                            tvAdd.setText("UPDATE");
+                            if(editRssResponseModel.isSuccess()){
+                                viewModel.editRssResponseModelMutableLiveData.postValue(editRssResponseModel);
                                 dismiss();
                             }else {
                                 Snackbar.make(root, "Something went wrong", Snackbar.LENGTH_LONG).show();
@@ -148,7 +157,7 @@ public class RssAddBottomSheet extends BottomSheetDialogFragment {
             @Override
             public void onChanged(String s) {
                 rotateLoading.stop();
-                tvAdd.setText("ADD");
+                tvAdd.setText("UPDATE");
                 Snackbar.make(root, s, Snackbar.LENGTH_LONG).show();
             }
         });

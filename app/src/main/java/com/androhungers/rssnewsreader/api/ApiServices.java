@@ -1,5 +1,9 @@
 package com.androhungers.rssnewsreader.api;
 
+import com.androhungers.rssnewsreader.model.addRss.AddRssResponseModel;
+import com.androhungers.rssnewsreader.model.deleteRss.DeleteRssResponseModel;
+import com.androhungers.rssnewsreader.model.editRss.EditRssResponseModel;
+import com.androhungers.rssnewsreader.model.getRss.GetRssResponseModel;
 import com.androhungers.rssnewsreader.model.signin.SigninResponseModel;
 import com.androhungers.rssnewsreader.model.signup.SignupResponseModel;
 
@@ -27,5 +31,39 @@ public interface ApiServices {
             @Part("name") RequestBody name,
             @Part("age") RequestBody age
             );
+
+    @Headers("Authorization: pGYBd52nZZrR_7UqpxmKD2_A9ZX2QAzRSr")
+    @Multipart
+    @POST("admi_co/v2/add_rss_feed")
+    Call<AddRssResponseModel> addRss(
+            @Part("user_id") RequestBody userId,
+            @Part("feed_name") RequestBody feedName,
+            @Part("link") RequestBody link
+    );
+
+    @Headers("Authorization: pGYBd52nZZrR_7UqpxmKD2_A9ZX2QAzRSr")
+    @Multipart
+    @POST("admi_co/v2/get_rss_feed")
+    Call<GetRssResponseModel> getRss(
+            @Part("user_id") RequestBody userId
+    );
+
+    @Headers("Authorization: pGYBd52nZZrR_7UqpxmKD2_A9ZX2QAzRSr")
+    @Multipart
+    @POST("admi_co/v2/edit_rss_feed")
+    Call<EditRssResponseModel> editRss(
+            @Part("id") RequestBody id,
+            @Part("feed_name") RequestBody feedName,
+            @Part("link") RequestBody link
+    );
+
+    @Headers("Authorization: pGYBd52nZZrR_7UqpxmKD2_A9ZX2QAzRSr")
+    @Multipart
+    @POST("admi_co/v2/delete_rss_feed")
+    Call<DeleteRssResponseModel> deleteRss(
+            @Part("id") RequestBody id
+    );
+
+
 
 }
