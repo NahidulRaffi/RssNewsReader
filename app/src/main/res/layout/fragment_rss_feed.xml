@@ -12,9 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        card_view:cardBackgroundColor="@color/colorWhite"
+        card_view:cardBackgroundColor="@color/colorPrimary"
         card_view:cardCornerRadius="0dp"
-        card_view:cardElevation="8dp" >
+        card_view:cardElevation="4dp" >
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="55dp">
@@ -28,7 +28,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_toRightOf="@+id/img"
                 android:textSize="18sp"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/colorWhite"
                 android:textStyle="normal"
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
@@ -48,37 +48,51 @@
     <androidx.viewpager.widget.ViewPager
         android:layout_marginTop="-6dp"
         android:id="@+id/view_pager"
-        android:layout_below="@+id/nav"
+        android:layout_below="@+id/rl"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
     </androidx.viewpager.widget.ViewPager>
 
-    <View
-        android:layout_marginTop="-6dp"
-        android:layout_below="@+id/nav"
-        android:background="#ddd"
+    <RelativeLayout
+        android:layout_marginTop="-3dp"
+        android:layout_below="@+id/card"
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="2dp"/>
+        android:layout_height="50dp">
 
-    <com.gigamole.navigationtabstrip.NavigationTabStrip
-        android:id="@+id/nav"
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl"
         android:layout_below="@+id/card"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:nts_color="@color/colorAccent"
-        app:nts_size="14sp"
-        app:nts_weight="10dp"
-        app:nts_factor="0.5"
-        app:nts_titles="@array/titles"
-        app:nts_type="point"
-        app:nts_gravity="bottom"
-        app:nts_typeface="fonts/lato_bold.ttf"
-        app:nts_corners_radius="10.5dp"
-        app:nts_animation_duration="300"
-        app:nts_active_color="@color/colorAccent"
-        app:nts_inactive_color="#c4c4c4"/>
+        android:layout_height="wrap_content">
+        <View
+            android:layout_marginTop="-6dp"
+            android:layout_below="@+id/nav"
+            android:background="#ddd"
+            android:layout_width="match_parent"
+            android:layout_height="0.7dp"/>
 
+        <com.gigamole.navigationtabstrip.NavigationTabStrip
+            android:id="@+id/nav"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:nts_color="@color/colorAccent"
+            app:nts_size="14sp"
+            app:nts_weight="8dp"
+            app:nts_factor="0.5"
+            app:nts_titles="@array/titles"
+            app:nts_type="point"
+            app:nts_gravity="bottom"
+            app:nts_typeface="fonts/lato_bold.ttf"
+            app:nts_corners_radius="10.5dp"
+            app:nts_animation_duration="300"
+            app:nts_active_color="@color/colorAccent"
+            app:nts_inactive_color="@color/colorWhite"/>
+
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

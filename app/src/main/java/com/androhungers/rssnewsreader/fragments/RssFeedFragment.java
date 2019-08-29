@@ -69,12 +69,15 @@ public class RssFeedFragment extends Fragment {
     }
 
     private void setUpUI(){
-        navigationTabStrip.setTitles("Home","My Rss");
-        navigationTabStrip.setTabIndex(0);
-
         RssPagerAdapter viewPagerAdater = new RssPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(viewPagerAdater);
-        navigationTabStrip.setViewPager(viewPager,0);
+
+        navigationTabStrip.setTitles("Home","My Rss");
+        navigationTabStrip.setViewPager(viewPager);
+
+        //navigationTabStrip.setTabIndex(0, true);
+
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
