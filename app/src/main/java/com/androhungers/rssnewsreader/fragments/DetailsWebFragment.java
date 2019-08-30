@@ -1,12 +1,17 @@
 package com.androhungers.rssnewsreader.fragments;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -33,6 +38,9 @@ public class DetailsWebFragment extends Fragment {
     @BindView(R.id.web)
     WebView webView;
 
+    @BindView(R.id.progress)
+    ProgressBar progressBar;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,12 +59,43 @@ public class DetailsWebFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        viewModel = ViewModelProviders.of(getActivity()).get(RssFeedViewModel.class);
 
+        init();
+        setUpListener();
+
+
+    }
+
+    private void init(){
+        viewModel = ViewModelProviders.of(getActivity()).get(RssFeedViewModel.class);
+        webView.loadUrl(viewModel.selectedData.getValue().getFeedItem().getMlink());
+        Log.i("::",viewModel.selectedData.getValue().getFeedItem().getMlink());
+        webView.getSettings().setJavaScriptEnabled(true);
+        progressBar.setVisibility(View.VISIBLE);
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onLoadResource(WebView view, String url) {
+                super.onLoadResource(view, url);
+            }
+        });
+    }
+
+    private void setUpListener(){
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
     }
