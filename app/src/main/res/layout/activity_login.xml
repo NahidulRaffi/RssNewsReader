@@ -79,7 +79,7 @@
                     android:inputType="textPassword"
                     android:id="@+id/et_password"
                     android:textSize="14sp"
-                    android:hint="Password *"
+                    android:hint="Password"
                     android:layout_marginLeft="16dp"
                     android:background="@android:color/transparent"
                     android:layout_width="match_parent"

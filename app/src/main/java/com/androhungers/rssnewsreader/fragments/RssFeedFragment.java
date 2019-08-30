@@ -1,6 +1,8 @@
 package com.androhungers.rssnewsreader.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -15,15 +17,20 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.androhungers.rssnewsreader.R;
+import com.androhungers.rssnewsreader.activities.LoginActivity;
 import com.androhungers.rssnewsreader.activities.RssFeedActivity;
 import com.androhungers.rssnewsreader.adapters.RssPagerAdapter;
+import com.androhungers.rssnewsreader.common.Constants;
+import com.androhungers.rssnewsreader.common.PreferenceHelper;
 import com.androhungers.rssnewsreader.viewModel.RssFeedViewModel;
 import com.gigamole.navigationtabstrip.NavigationTabStrip;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.mrapp.android.dialog.MaterialDialog;
 
 
 public class RssFeedFragment extends Fragment {
@@ -33,6 +40,9 @@ public class RssFeedFragment extends Fragment {
 
     @BindView(R.id.view_pager)
     ViewPager viewPager;
+
+    @BindView(R.id.img_log_out)
+    ImageView imgLogOut;
 
     public static String tag = RssFeedFragment.class.toString();
     private RssFeedActivity rssFeedActivity = new RssFeedActivity();
@@ -95,6 +105,30 @@ public class RssFeedFragment extends Fragment {
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+
+        imgLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(getContext());
+                dialogBuilder.setButtonTextColor(getResources().getColor(R.color.colorPrimary));
+                dialogBuilder.setTitle("Log out !!!");
+                dialogBuilder.setMessage("Are you sure to Log out?");
+
+                dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        new PreferenceHelper(getContext()).saveString(Constants.USER_DATA_FIELD,"");
+                        new PreferenceHelper(getContext()).saveString(Constants.LOGIN_SATE_FIELD,"");
+                        Intent intent = new Intent(getContext(), LoginActivity.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                });
+                dialogBuilder.setNegativeButton(android.R.string.cancel, null);
+                MaterialDialog dialog = dialogBuilder.create();
+                dialog.show();
             }
         });
 

@@ -2,9 +2,12 @@ package com.androhungers.rssnewsreader.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,29 +24,22 @@ import com.androhungers.rssnewsreader.common.Constants;
 import com.androhungers.rssnewsreader.common.PreferenceHelper;
 import com.androhungers.rssnewsreader.model.addRss.AddRssRequestModel;
 import com.androhungers.rssnewsreader.model.addRss.AddRssResponseModel;
+import com.androhungers.rssnewsreader.model.deleteRss.DeleteRssRequestModel;
+import com.androhungers.rssnewsreader.model.deleteRss.DeleteRssResponseModel;
 import com.androhungers.rssnewsreader.viewModel.RssFeedViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.victor.loading.rotate.RotateLoading;
 
+import de.mrapp.android.dialog.MaterialDialog;
+
 import static android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
 
 public class RssAddBottomSheet extends BottomSheetDialogFragment {
-
-    Context context;
-
-    View rootView;
-
-    private int lastVisibleItem = 0;
-    private int firstY = 0;
-
+    View contentView;
     BottomSheetBehavior bottomSheetBehavior;
-
     RssFeedViewModel viewModel;
-
-
-    //public static RssAddBottomSheet getInstance() {return new RssAddBottomSheet();}
 
 
     public RssAddBottomSheet(RssFeedViewModel viewModel) {
@@ -59,8 +55,6 @@ public class RssAddBottomSheet extends BottomSheetDialogFragment {
             if (newState == BottomSheetBehavior.STATE_DRAGGING) {
 
             }
-
-            System.out.println("djhfgjhsgfjhgsdjh");
         }
 
         @Override
@@ -78,8 +72,96 @@ public class RssAddBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void setupDialog(final Dialog dialog, int style) {
         super.setupDialog(dialog, style);
+        init(dialog);
 
-        View contentView = View.inflate(getContext(), R.layout.rss_add_bottom_sheet, null);
+        EditText etFeedName = contentView.findViewById(R.id.et_feed_name);
+        EditText etLink = contentView.findViewById(R.id.et_link);
+        ImageView imgBack = contentView.findViewById(R.id.img_close);
+        TextView tvAdd = contentView.findViewById(R.id.btn_add);
+        RotateLoading rotateLoading = contentView.findViewById(R.id.progress);
+
+
+        viewModel.errorMsg.postValue("");
+        tvAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotateLoading.start();
+                tvAdd.setText("");
+                viewModel.feedNameLiveData.setValue(etFeedName.getText().toString());
+                viewModel.linkLiveData.setValue(etLink.getText().toString());
+
+                if(viewModel.isValidInput()){
+                    String userId = String.valueOf(new Common().getUserDataFromSignIn(new PreferenceHelper(getContext()).getString(Constants.USER_DATA_FIELD)).getId());
+                    viewModel.addRssRequestModelMutableLiveData.setValue(new AddRssRequestModel(userId,viewModel.feedNameLiveData.getValue(),viewModel.linkLiveData.getValue()));
+                    viewModel.requestForAddRss(viewModel.addRssRequestModelMutableLiveData.getValue()).observe(RssAddBottomSheet.this, new Observer<AddRssResponseModel>() {
+                        @Override
+                        public void onChanged(AddRssResponseModel addRssResponseModel) {
+                            rotateLoading.stop();
+                            tvAdd.setText("ADD");
+                            if(addRssResponseModel.isSuccess()){
+                                viewModel.addRssResponseModelMutableLiveData.postValue(addRssResponseModel);
+                                dismiss();
+                            }else {
+                                MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(getContext());
+                                dialogBuilder.setButtonTextColor(getResources().getColor(R.color.colorPrimary));
+                                dialogBuilder.setTitle("Error !!!");
+                                dialogBuilder.setMessage("Something went wrong. Please try again.");
+
+                                dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                    }
+                                });
+                                dialogBuilder.setNegativeButton(android.R.string.cancel, null);
+                                MaterialDialog dialog = dialogBuilder.create();
+                                dialog.show();
+                                //Snackbar.make(root, "Something went wrong", Snackbar.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
+
+        viewModel.errorMsg.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if(!s.equalsIgnoreCase("")){
+                    rotateLoading.stop();
+                    tvAdd.setText("ADD");
+                    MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(getContext());
+                    dialogBuilder.setButtonTextColor(getResources().getColor(R.color.colorPrimary));
+                    dialogBuilder.setTitle("Alert !!!");
+                    dialogBuilder.setMessage(s);
+
+                    dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    dialogBuilder.setNegativeButton(android.R.string.cancel, null);
+                    MaterialDialog dialog = dialogBuilder.create();
+                    dialog.show();
+                }
+
+                //Snackbar.make(root, s, Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+
+    private void init(Dialog dialog){
+        contentView = View.inflate(getContext(), R.layout.rss_add_bottom_sheet, null);
         dialog.setContentView(contentView);
 
 
@@ -102,56 +184,9 @@ public class RssAddBottomSheet extends BottomSheetDialogFragment {
             ((BottomSheetBehavior)params.getBehavior()).setBottomSheetCallback(mBottomSheetBehaviorCallback);
         }
 
-
-
         parent.setLayoutParams(params);
 
-
         getActivity().getWindow().setSoftInputMode(SOFT_INPUT_ADJUST_RESIZE);
-
-        EditText etFeedName = contentView.findViewById(R.id.et_feed_name);
-        EditText etLink = contentView.findViewById(R.id.et_link);
-        RelativeLayout root = contentView.findViewById(R.id.rl_root);
-        TextView tvAdd = contentView.findViewById(R.id.btn_add);
-        RotateLoading rotateLoading = contentView.findViewById(R.id.progress);
-
-
-        tvAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                rotateLoading.start();
-                tvAdd.setText("");
-                viewModel.feedNameLiveData.setValue(etFeedName.getText().toString());
-                viewModel.linkLiveData.setValue(etLink.getText().toString());
-
-                if(viewModel.isValidInput()){
-                    String userId = String.valueOf(new Common().getUserDataFromSignIn(new PreferenceHelper(getContext()).getString(Constants.USER_DATA_FIELD)).getId());
-                    viewModel.addRssRequestModelMutableLiveData.setValue(new AddRssRequestModel(userId,viewModel.feedNameLiveData.getValue(),viewModel.linkLiveData.getValue()));
-                    viewModel.requestForAddRss(viewModel.addRssRequestModelMutableLiveData.getValue()).observe(RssAddBottomSheet.this, new Observer<AddRssResponseModel>() {
-                        @Override
-                        public void onChanged(AddRssResponseModel addRssResponseModel) {
-                            rotateLoading.stop();
-                            tvAdd.setText("ADD");
-                            if(addRssResponseModel.isSuccess()){
-                                viewModel.addRssResponseModelMutableLiveData.postValue(addRssResponseModel);
-                                dismiss();
-                            }else {
-                                Snackbar.make(root, "Something went wrong", Snackbar.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                }
-            }
-        });
-
-        viewModel.errorMsg.observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                rotateLoading.stop();
-                tvAdd.setText("ADD");
-                Snackbar.make(root, s, Snackbar.LENGTH_LONG).show();
-            }
-        });
 
     }
 

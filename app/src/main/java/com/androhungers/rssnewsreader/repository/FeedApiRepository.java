@@ -53,7 +53,7 @@ public class FeedApiRepository {
             @Override
             public void onFailure(Call<Feed> call, Throwable t) {
                 String s = new Gson().toJson(t);
-
+                data.postValue(null);
                 Log.d("SearchResponse", s);
             }
         });

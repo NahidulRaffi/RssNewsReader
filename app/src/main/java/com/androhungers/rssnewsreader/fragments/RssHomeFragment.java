@@ -83,13 +83,20 @@ public class RssHomeFragment extends Fragment implements HomeRssAdapter.OnItemCl
         viewModel.myRssList.observe(this, new Observer<ArrayList<DataItem>>() {
             @Override
             public void onChanged(ArrayList<DataItem> dataItems) {
-
                 adapter.itemArrayList.clear();
                 adapter.notifyDataSetChanged();
-                viewModel.recentData.setValue(new ArrayList<RssFeedDataModel>());
-                viewModel.myRssListCount = dataItems.size()-1;
-                String url = dataItems.get(viewModel.myRssListCount).getLink();
-                setUrl(url);
+                if(!dataItems.isEmpty()){
+                    viewModel.recentData.setValue(new ArrayList<RssFeedDataModel>());
+                    viewModel.myRssListCount = dataItems.size()-1;
+
+                    String url = dataItems.get(viewModel.myRssListCount).getLink();
+
+                    setUrl(url);
+                }else {
+                    swipeRefreshLayout.setRefreshing(false);
+
+                }
+
             }
         });
 
@@ -98,19 +105,47 @@ public class RssHomeFragment extends Fragment implements HomeRssAdapter.OnItemCl
             public void onChanged(Feed feed) {
                 String s = new Gson().toJson(feed);
                 Log.d("::Home::", s);
-                swipeRefreshLayout.setRefreshing(false);
-
-                List<FeedItem> feedItems = feed.getmChannel().getmFeedItems();
-                ArrayList<RssFeedDataModel> rssFeedDataModels = new ArrayList<>();
-                for(int i = 0; i < feed.getmChannel().getmFeedItems().size(); i++){
-                    RssFeedDataModel rssFeedDataModel = new RssFeedDataModel(feedItems.get(i),feed.getmChannel().getmTitle());
-                    rssFeedDataModels.add(rssFeedDataModel);
-                }
-
-                viewModel.recentData.setValue(rssFeedDataModels);
-                viewModel.addResults(rssFeedDataModels);
                 viewModel.isLoading = false;
+                if(!s.isEmpty()){
+                    swipeRefreshLayout.setRefreshing(false);
 
+                    try{
+                        List<FeedItem> feedItems = feed.getmChannel().getmFeedItems();
+                        ArrayList<RssFeedDataModel> rssFeedDataModels = new ArrayList<>();
+                        for(int i = 0; i < feed.getmChannel().getmFeedItems().size(); i++){
+                            RssFeedDataModel rssFeedDataModel = new RssFeedDataModel(feedItems.get(i),feed.getmChannel().getmTitle());
+                            rssFeedDataModels.add(rssFeedDataModel);
+                        }
+
+                        viewModel.recentData.setValue(rssFeedDataModels);
+                        viewModel.addResults(rssFeedDataModels);
+                    }catch (NullPointerException e){
+                        if(!viewModel.isLoading){
+                            viewModel.isLoading = true;
+                            swipeRefreshLayout.setRefreshing(true);
+                            if(viewModel.myRssListCount > 0){
+                                viewModel.myRssListCount = viewModel.myRssListCount - 1;
+                                String url = viewModel.myRssList.getValue().get(viewModel.myRssListCount).getLink();
+                                setUrl(url);
+                            }else {
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        }
+                    }
+
+                }else {
+                    if(!viewModel.isLoading){
+                        viewModel.isLoading = true;
+                        swipeRefreshLayout.setRefreshing(true);
+                        if(viewModel.myRssListCount > 0){
+                            viewModel.myRssListCount = viewModel.myRssListCount - 1;
+                            String url = viewModel.myRssList.getValue().get(viewModel.myRssListCount).getLink();
+                            setUrl(url);
+                        }else {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+                }
             }
         });
 
@@ -130,11 +165,20 @@ public class RssHomeFragment extends Fragment implements HomeRssAdapter.OnItemCl
     }
 
     private void setUrl(String url){
-        ArrayList<String> str = (ArrayList<String>) divideUrl(url);
-        String s = new Gson().toJson(str);
-        Log.d("::Home::", s);
-        viewModel.feedBaseUrl.setValue(str.get(0));
-        viewModel.feedUrl.setValue(str.get(1));
+        if(viewModel.isValidUrl(url)){
+            ArrayList<String> str = (ArrayList<String>) divideUrl(url);
+            String s = new Gson().toJson(str);
+            Log.d("::Home::", s);
+            viewModel.feedBaseUrl.setValue(str.get(0));
+            viewModel.feedUrl.setValue(str.get(1));
+        }else {
+            if(viewModel.myRssListCount > 0){
+                viewModel.myRssListCount = viewModel.myRssListCount - 1;
+                String url2 = viewModel.myRssList.getValue().get(viewModel.myRssListCount).getLink();
+                setUrl(url2);
+            }
+        }
+
     }
 
     private void setUpRecyclerView(){
@@ -194,10 +238,17 @@ public class RssHomeFragment extends Fragment implements HomeRssAdapter.OnItemCl
             public void onRefresh() {
                 adapter.itemArrayList.clear();
                 adapter.notifyDataSetChanged();
-                viewModel.recentData.setValue(new ArrayList<RssFeedDataModel>());
-                viewModel.myRssListCount = viewModel.myRssList.getValue().size()-1;
-                String url = viewModel.myRssList.getValue().get(viewModel.myRssListCount).getLink();
-                setUrl(url);
+                if(!viewModel.myRssList.getValue().isEmpty()){
+
+                    viewModel.recentData.setValue(new ArrayList<RssFeedDataModel>());
+                    viewModel.myRssListCount = viewModel.myRssList.getValue().size()-1;
+                    String url = viewModel.myRssList.getValue().get(viewModel.myRssListCount).getLink();
+                    setUrl(url);
+                }else {
+                    swipeRefreshLayout.setRefreshing(false);
+
+                }
+
             }
         });
     }

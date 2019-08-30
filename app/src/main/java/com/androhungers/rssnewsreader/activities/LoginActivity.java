@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +29,7 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.mrapp.android.dialog.MaterialDialog;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -72,7 +74,26 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onChanged(String s) {
                 rotateLoading.stop();
-                Snackbar.make(rootLayout, s, Snackbar.LENGTH_LONG).show();
+                if(viewModel.STATE.getValue().equalsIgnoreCase("signin")){
+                    textViewSignIn.setText("Sign In");
+                }else {
+                    textViewSignIn.setText("Register");
+                }
+
+                MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(LoginActivity.this);
+                dialogBuilder.setButtonTextColor(getResources().getColor(R.color.colorPrimary));
+                dialogBuilder.setTitle("Alert !!!");
+                dialogBuilder.setMessage(s);
+
+                dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                dialogBuilder.setNegativeButton(android.R.string.cancel, null);
+                MaterialDialog dialog = dialogBuilder.create();
+                dialog.show();
             }
         });
 
@@ -118,8 +139,20 @@ public class LoginActivity extends AppCompatActivity {
                                     startActivity(intent);
                                     finish();
                                 }else {
+                                    MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(LoginActivity.this);
+                                    dialogBuilder.setButtonTextColor(getResources().getColor(R.color.colorPrimary));
+                                    dialogBuilder.setTitle("Error !!!");
+                                    dialogBuilder.setMessage("Something went wrong. Please try again.");
 
+                                    dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
 
+                                        }
+                                    });
+                                    dialogBuilder.setNegativeButton(android.R.string.cancel, null);
+                                    MaterialDialog dialog = dialogBuilder.create();
+                                    dialog.show();
                                 }
 
                             }
@@ -140,7 +173,20 @@ public class LoginActivity extends AppCompatActivity {
                                     startActivity(intent);
                                     finish();
                                 }else {
+                                    MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(getApplicationContext());
+                                    dialogBuilder.setButtonTextColor(getResources().getColor(R.color.colorPrimary));
+                                    dialogBuilder.setTitle("Error !!!");
+                                    dialogBuilder.setMessage("Something went wrong. Please try again.");
 
+                                    dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                                        }
+                                    });
+                                    dialogBuilder.setNegativeButton(android.R.string.cancel, null);
+                                    MaterialDialog dialog = dialogBuilder.create();
+                                    dialog.show();
                                 }
 
                             }

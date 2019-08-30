@@ -1,5 +1,7 @@
 package com.androhungers.rssnewsreader.viewModel;
 
+import android.util.Patterns;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
@@ -24,6 +26,8 @@ import com.androhungers.rssnewsreader.repository.ApiRepository;
 import com.androhungers.rssnewsreader.repository.FeedApiRepository;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RssFeedViewModel extends ViewModel {
 
@@ -68,7 +72,13 @@ public class RssFeedViewModel extends ViewModel {
 
             errorMsg.postValue("Please enter Feed Link");
             return false;
+        }else {
+            if(!isValidUrl(linkLiveData.getValue())){
+                errorMsg.postValue("Please enter Valid Feed Link");
+                return false;
+            }
         }
+
 
         return true;
     }
@@ -106,4 +116,14 @@ public class RssFeedViewModel extends ViewModel {
     public LiveData<Feed> getRssFeed = Transformations.switchMap(feedUrl,
             getRssRequestModelMutableLiveData -> new FeedApiRepository(feedBaseUrl.getValue()).getRssFeed(feedUrl.getValue()));
 
+    /**
+     * This is used to check the given URL is valid or not.
+     * @param url
+     * @return true if url is valid, false otherwise.
+     */
+    public boolean isValidUrl(String url) {
+        Pattern p = Patterns.WEB_URL;
+        Matcher m = p.matcher(url.toLowerCase());
+        return m.matches();
+    }
 }
