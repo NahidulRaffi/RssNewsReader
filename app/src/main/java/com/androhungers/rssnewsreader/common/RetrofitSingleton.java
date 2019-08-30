@@ -9,6 +9,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.simplexml.*;
 
 public class RetrofitSingleton {
     private Retrofit retrofit = null;
@@ -26,15 +27,6 @@ public class RetrofitSingleton {
     public Retrofit getRetrofit(){
         if (retrofit == null) {
             OkHttpClient client = new OkHttpClient.Builder()
-                    /*.addInterceptor(new Interceptor() {
-                        @Override
-                        public Response intercept(Chain chain) throws IOException {
-                            Request newRequest  = chain.request().newBuilder()
-                                    .addHeader("Authorization",Constants.API_KEY)
-                                    .build();
-                            return chain.proceed(newRequest);
-                        }
-                    })*/
                     .connectTimeout(1000, TimeUnit.SECONDS)
                     .readTimeout(1000, TimeUnit.SECONDS).build();
             retrofit = new Retrofit.Builder()
@@ -46,4 +38,5 @@ public class RetrofitSingleton {
 
         return retrofit;
     }
+
 }

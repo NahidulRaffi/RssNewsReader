@@ -47,4 +47,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.github.michael-rapp:android-material-dialog:5.1.6'
     implementation 'com.baoyz.pullrefreshlayout:library:1.2.0'
+    implementation 'com.squareup.retrofit2:converter-simplexml:2.6.1'
 }

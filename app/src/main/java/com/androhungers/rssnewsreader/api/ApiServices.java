@@ -4,15 +4,18 @@ import com.androhungers.rssnewsreader.model.addRss.AddRssResponseModel;
 import com.androhungers.rssnewsreader.model.deleteRss.DeleteRssResponseModel;
 import com.androhungers.rssnewsreader.model.editRss.EditRssResponseModel;
 import com.androhungers.rssnewsreader.model.getRss.GetRssResponseModel;
+import com.androhungers.rssnewsreader.model.rssFeed.Feed;
 import com.androhungers.rssnewsreader.model.signin.SigninResponseModel;
 import com.androhungers.rssnewsreader.model.signup.SignupResponseModel;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 
 public interface ApiServices {
 
@@ -65,5 +68,7 @@ public interface ApiServices {
     );
 
 
+    @GET("{fullUrl}")
+    Call<Feed> getRssFeed(@Path(value = "fullUrl", encoded = true) String fullUrl);
 
 }

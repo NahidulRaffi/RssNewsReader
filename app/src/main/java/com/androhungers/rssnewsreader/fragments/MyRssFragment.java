@@ -80,22 +80,11 @@ public class MyRssFragment extends Fragment implements MyRssAdapter.OnItemClickL
 
         Log.i("::>>","Child Frag Activity Created");
 
-        rssFeedActivity = (RssFeedActivity) getActivity();
-        viewModel = ViewModelProviders.of(getActivity()).get(RssFeedViewModel.class);
+        Init();
 
         setUpRecyclerView();
 
-        String userId = String.valueOf(new Common().getUserDataFromSignIn(new PreferenceHelper(getContext()).getString(Constants.USER_DATA_FIELD)).getId());
-        viewModel.getRssRequestModelMutableLiveData.setValue(new GetRssRequestModel(userId));
-
-
-        imgAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RssAddBottomSheet bottomSheetLayout = new RssAddBottomSheet(viewModel);
-                bottomSheetLayout.show(getFragmentManager(), "OK");
-            }
-        });
+        setUpListener();
 
         viewModel.addRssResponseModelMutableLiveData.observe(this, new Observer<AddRssResponseModel>() {
             @Override
@@ -126,6 +115,7 @@ public class MyRssFragment extends Fragment implements MyRssAdapter.OnItemClickL
             public void onChanged(GetRssResponseModel getRssResponseModel) {
                 swipeRefreshLayout.setRefreshing(false);
                 if(getRssResponseModel.isSuccess()){
+                    viewModel.myRssList.postValue((ArrayList<DataItem>) getRssResponseModel.getData());
                     adapter.setItemList((ArrayList<DataItem>) getRssResponseModel.getData());
                     adapter.notifyDataSetChanged();
                 }
@@ -157,6 +147,27 @@ public class MyRssFragment extends Fragment implements MyRssAdapter.OnItemClickL
             }
         });
 
+
+
+    }
+
+    private void Init(){
+        rssFeedActivity = (RssFeedActivity) getActivity();
+        viewModel = ViewModelProviders.of(getActivity()).get(RssFeedViewModel.class);
+        String userId = String.valueOf(new Common().getUserDataFromSignIn(new PreferenceHelper(getContext()).getString(Constants.USER_DATA_FIELD)).getId());
+        viewModel.getRssRequestModelMutableLiveData.setValue(new GetRssRequestModel(userId));
+
+    }
+
+    private void setUpListener(){
+        imgAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RssAddBottomSheet bottomSheetLayout = new RssAddBottomSheet(viewModel);
+                bottomSheetLayout.show(getFragmentManager(), "OK");
+            }
+        });
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -165,7 +176,6 @@ public class MyRssFragment extends Fragment implements MyRssAdapter.OnItemClickL
 
             }
         });
-
     }
 
     private void setUpRecyclerView(){

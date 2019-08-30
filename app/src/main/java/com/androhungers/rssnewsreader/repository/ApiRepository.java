@@ -15,6 +15,7 @@ import com.androhungers.rssnewsreader.model.editRss.EditRssRequestModel;
 import com.androhungers.rssnewsreader.model.editRss.EditRssResponseModel;
 import com.androhungers.rssnewsreader.model.getRss.GetRssRequestModel;
 import com.androhungers.rssnewsreader.model.getRss.GetRssResponseModel;
+import com.androhungers.rssnewsreader.model.rssFeed.Feed;
 import com.androhungers.rssnewsreader.model.signin.SigninRequestModel;
 import com.androhungers.rssnewsreader.model.signin.SigninResponseModel;
 import com.androhungers.rssnewsreader.model.signup.SignupRequestModel;
