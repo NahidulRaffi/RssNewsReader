@@ -5,6 +5,8 @@ This app is compatible with Android 5.+ (Lolipop) Versions. So please be sure yo
 
 ## About
 
+
+
 This is an Android Application to parse a RSS Feed. You can retrive data from RSS Url and add it to your feed. Here is the functional steps that contains in this Application:
 <ul>
 <li> User Log in
